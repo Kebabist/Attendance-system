@@ -1,44 +1,8 @@
-# Attendance-system
-![image](https://github.com/user-attachments/assets/dd2ebd9f-2724-4863-80c3-1498970f4836)
-![image](https://github.com/user-attachments/assets/d6bea974-7cff-40ef-949f-6b04c661cd69)
-![image](https://github.com/user-attachments/assets/8ec19873-63b7-4139-ae15-b68b3fadfada)
-IoT-Based Smart Attendance System with People Counting
-This project is a comprehensive, IoT-based attendance and room occupancy management system. It utilizes a network of ESP32 devices, a central Flask server, and LoRa (Long Range) communication. The use of LoRa is a key feature, enabling the system to operate effectively in locations with poor or no standard network connectivity, ensuring that attendance and sensor data can always be relayed from slave nodes to the central master device.
-
-The system provides real-time attendance tracking and remote device management. A standout feature is its accurate people counting, achieved by using a pair of ultrasonic sensors on each slave device. By detecting the sequence in which the sensors are triggered, the system can determine the direction of movement (in or out of a room) and maintain a precise, real-time occupancy count.
-
-System Architecture
-The system consists of three main components:
-
-Flask Web Server (server.py): A Python-based backend that serves as the central hub for data management and control. It provides a web dashboard, REST APIs for the devices, and manages a SQLite database.
-
-Master ESP32 Device (master.c): The primary hardware node that acts as a gateway. It communicates with the backend server via WiFi and with slave devices via LoRa. It aggregates data from slaves and can relay commands, including Over-the-Air (OTA) firmware updates.
-
-Slave ESP32 Device (slave.c): Peripheral nodes responsible for data acquisition. Each slave is equipped with an RFID reader for attendance, ultrasonic sensors for people counting, an LCD display, and a keypad for user interaction.
-
-Key Features
-Backend & Dashboard
-Real-time Web Dashboard: A single-page application to monitor all system components.
-
-Student Management: Register, view, and manage student data.
-
-Attendance Logging: Tracks attendance records with student details, timestamps, and the device used.
-
-Device Monitoring: View all connected master and slave devices, their online/offline status, IP address, firmware version, and last heartbeat.
-
-People Counting: Aggregates and displays the total number of people detected by all slave devices.
-
-Firmware Management: Upload new firmware binaries (.bin) to the server.
-
-Over-the-Air (OTA) Updates: Push firmware updates from the dashboard to both master and slave devices over WiFi.
-
-System Event Logging: A comprehensive log of all major system events for debugging and auditing.
-Summarized conversation historyBased on my analysis of your project files, here's a comprehensive and accurate README that reflects your current implementation:
-
-```markdown
-# ESP32 Smart Attendance System with People Counting
+# Smart Attendance System
 
 A comprehensive IoT-based attendance and room occupancy management system using ESP32 devices, Flask web server, and LoRa communication for reliable operation in environments with limited network connectivity.
+
+---
 
 ## 🔧 System Architecture
 
@@ -46,7 +10,7 @@ The system consists of three main components:
 
 ### 1. Flask Web Server (`server.py`)
 - Python-based backend with SQLite database
-- Real-time web dashboard with Bootstrap UI
+- Real-time web dashboard (Bootstrap UI)
 - REST API endpoints for device communication
 - Firmware management and OTA update coordination
 - Iran timezone support for local time handling
@@ -66,36 +30,40 @@ The system consists of three main components:
 - WiFi capability for direct OTA updates
 - Local admin menu for device management
 
+---
+
 ## ✨ Key Features
 
 ### Backend Dashboard
-- **Real-time Monitoring**: Live device status, attendance records, and people counts
-- **Student Management**: Add/view registered students with complete profiles
-- **Device Management**: Monitor ESP32 devices with status, IP, firmware version, and heartbeat
-- **Firmware Management**: Upload and push OTA updates to devices
-- **People Counting**: Aggregate occupancy data from all slave devices
-- **Event Logging**: Comprehensive system activity logs
-- **Auto-refresh**: Dashboard updates every 10-30 seconds
+- **Real-time Monitoring:** Live device status, attendance records, and people counts
+- **Student Management:** Add/view registered students with complete profiles
+- **Device Management:** Monitor ESP32 devices with status, IP, firmware version, and heartbeat
+- **Firmware Management:** Upload and push OTA updates to devices
+- **People Counting:** Aggregate occupancy data from all slave devices
+- **Event Logging:** Comprehensive system activity logs
+- **Auto-refresh:** Dashboard updates every 10-30 seconds
 
 ### Smart People Counting
-- **Directional Detection**: Two ultrasonic sensors detect entry/exit direction
-- **State Machine Logic**: Robust sequence detection prevents false counts
-- **Dynamic Calibration**: Automatic baseline adjustment for different environments
-- **Filtering**: Multi-sample averaging for noise reduction
-- **Real-time Display**: Live count updates on LCD and dashboard
+- **Directional Detection:** Two ultrasonic sensors detect entry/exit direction
+- **State Machine Logic:** Robust sequence detection prevents false counts
+- **Dynamic Calibration:** Automatic baseline adjustment for different environments
+- **Filtering:** Multi-sample averaging for noise reduction
+- **Real-time Display:** Live count updates on LCD and dashboard
 
 ### Communication System
-- **Hybrid Connectivity**: LoRa for slave-to-master, WiFi for master-to-server
-- **Heartbeat Monitoring**: Regular status updates with health metrics
-- **Reliable Messaging**: ACK/NACK protocol for LoRa communication
-- **Automatic Reconnection**: WiFi fallback and recovery mechanisms
+- **Hybrid Connectivity:** LoRa for slave-to-master, WiFi for master-to-server
+- **Heartbeat Monitoring:** Regular status updates with health metrics
+- **Reliable Messaging:** ACK/NACK protocol for LoRa communication
+- **Automatic Reconnection:** WiFi fallback and recovery mechanisms
 
 ### OTA Update System
-- **Dual Mode Updates**: WiFi OTA for direct updates, LoRa OTA for remote slaves
-- **Progress Monitoring**: Real-time update progress with visual feedback
-- **Chunked Transfer**: Large firmware files split into manageable LoRa packets
-- **Integrity Verification**: CRC32 checksums ensure data integrity
-- **Web Interface**: ElegantOTA integration for easy updates
+- **Dual Mode Updates:** WiFi OTA for direct updates, LoRa OTA for remote slaves
+- **Progress Monitoring:** Real-time update progress with visual feedback
+- **Chunked Transfer:** Large firmware files split into manageable LoRa packets
+- **Integrity Verification:** CRC32 checksums ensure data integrity
+- **Web Interface:** ElegantOTA integration for easy updates
+
+---
 
 ## 🛠️ Hardware Requirements
 
@@ -104,39 +72,46 @@ The system consists of three main components:
 
 ### Master Device
 - **ESP32 Dev Module**
-- **LoRa Module**: SX1276/SX1278 (433MHz)
+- **LoRa Module:** SX1276/SX1278 (433MHz)
 
 ### Each Slave Device
 - **ESP32 Dev Module**
-- **LoRa Module**: SX1276/SX1278 (433MHz)
-- **RFID Reader**: MFRC522
-- **Display**: 16x2 I2C LCD (address 0x27)
-- **Input**: 4x4 Matrix Keypad
-- **Sensors**: 2x HC-SR04 Ultrasonic Sensors
+- **LoRa Module:** SX1276/SX1278 (433MHz)
+- **RFID Reader:** MFRC522
+- **Display:** 16x2 I2C LCD (address 0x27)
+- **Input:** 4x4 Matrix Keypad
+- **Sensors:** 2x HC-SR04 Ultrasonic Sensors
 - **RFID Cards/Tags**
+
+---
 
 ## 📋 Software Requirements
 
 ### Backend
+
 ```bash
 pip install Flask Flask-Cors pytz
 ```
 
 ### ESP32 Development
-- **Arduino IDE** with ESP32 board support
-- **Board Manager URL**: `https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json`
+- **Arduino IDE** with ESP32 board support  
+  Board Manager URL:  
+  `https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json`
 
-### Required Libraries (Install via Library Manager)
+#### Required Libraries (Install via Library Manager)
 - `LoRa` by Sandeep Mistry
-- `ElegantOTA` by Ayush Sharma  
+- `ElegantOTA` by Ayush Sharma
 - `ArduinoJson` by Benoit Blanchon
 - `MFRC522` by GithubCommunity
 - `LiquidCrystal_I2C` by Frank de Brabander
 - `Keypad` by Mark Stanley
 
+---
+
 ## 🚀 Installation & Setup
 
 ### 1. Backend Server Setup
+
 ```bash
 # Clone the repository
 git clone <repository-url>
@@ -148,7 +123,8 @@ pip install Flask Flask-Cors pytz
 # Run the server
 python server.py
 ```
-Access dashboard at: `http://localhost:5001`
+
+Access the dashboard at: [http://localhost:5001](http://localhost:5001)
 
 ### 2. ESP32 Configuration
 
@@ -193,60 +169,93 @@ SS -> GPIO 13
 3. **Verify pin definitions** match your hardware wiring
 4. **Upload firmware** to respective ESP32 devices
 
+---
+
 ## 📱 Usage Guide
 
 ### Web Dashboard
-- **Attendance Tab**: View real-time attendance records
-- **Students Tab**: Add/manage student profiles  
-- **Devices Tab**: Monitor ESP32 status, reboot devices, view heartbeats
-- **Firmware Tab**: Upload .bin files and push OTA updates
-- **Logs Tab**: System event monitoring and debugging
+- **Attendance Tab:** View real-time attendance records
+- **Students Tab:** Add/manage student profiles
+- **Devices Tab:** Monitor ESP32 status, reboot devices, view heartbeats
+- **Firmware Tab:** Upload .bin files and push OTA updates
+- **Logs Tab:** System event monitoring and debugging
 
 ### Slave Device Operation
-- **RFID Attendance**: Tap registered cards on reader
-- **Manual Entry**: Press any key → enter 8-digit ID → press `*` to confirm
-- **Admin Menu**: Enter admin ID `10111213` → press `*`
+- **RFID Attendance:** Tap registered cards on reader
+- **Manual Entry:** Press any key → enter 8-digit ID → press `*` to confirm
+- **Admin Menu:** Enter admin ID `10111213` → press `*`
   - Navigate with `2`/`8` keys
   - Select with `*`, exit with `#`
-- **People Counting**: Automatic - sensors detect entry/exit direction
+- **People Counting:** Automatic - sensors detect entry/exit direction
 
 ### Master Device
-- **Web Interface**: Access via `http://<master-ip>/` for local control
-- **OTA Updates**: Automatic coordination of firmware updates
-- **Status Monitoring**: Real-time slave device management
+- **Web Interface:** Access via `http://<master-ip>/` for local control
+- **OTA Updates:** Automatic coordination of firmware updates
+- **Status Monitoring:** Real-time slave device management
+
+---
 
 ## 📊 System Features
 
 ### Advanced People Counting
-- **Bidirectional Detection**: Distinguishes between entries and exits
-- **State Machine**: IDLE → SENSOR1_TRIGGERED → BOTH_TRIGGERED → SENSOR2_TRIGGERED
-- **Debouncing**: Prevents false triggering from sensor noise
-- **Calibration**: Auto-adjusts to room baseline distances
+- **Bidirectional Detection:** Distinguishes between entries and exits
+- **State Machine:** IDLE → SENSOR1_TRIGGERED → BOTH_TRIGGERED → SENSOR2_TRIGGERED
+- **Debouncing:** Prevents false triggering from sensor noise
+- **Calibration:** Auto-adjusts to room baseline distances
 
 ### Robust Communication
-- **LoRa Protocol**: Custom message format with ACK/NACK
-- **Heartbeat System**: 30-second LoRa, 60-second WiFi intervals
-- **Error Recovery**: Automatic reconnection and retry mechanisms
-- **Data Validation**: CRC checksums and duplicate prevention
+- **LoRa Protocol:** Custom message format with ACK/NACK
+- **Heartbeat System:** 30-second LoRa, 60-second WiFi intervals
+- **Error Recovery:** Automatic reconnection and retry mechanisms
+- **Data Validation:** CRC checksums and duplicate prevention
 
 ### Security & Reliability
-- **Database Locking**: Thread-safe SQLite operations
-- **Duplicate Prevention**: 5-minute cooldown for attendance records
-- **Iran Timezone**: Accurate local time handling
-- **System Logging**: Comprehensive event tracking
+- **Database Locking:** Thread-safe SQLite operations
+- **Duplicate Prevention:** 5-minute cooldown for attendance records
+- **Iran Timezone:** Accurate local time handling
+- **System Logging:** Comprehensive event tracking
+
+---
+
+## 🖼️ Screenshots
+
+> _Add your screenshots here to showcase the dashboard, device status, and real-time people counting!_
+
+| Dashboard Overview | Device Management | Attendance Records |
+|:------------------:|:----------------:|:-----------------:|
+| ![Dashboard](![image](https://github.com/user-attachments/assets/8ec19873-63b7-4139-ae15-b68b3fadfada)) | ![Devices](![image](https://github.com/user-attachments/assets/dd2ebd9f-2724-4863-80c3-1498970f4836)) | ![Attendance](![image](https://github.com/user-attachments/assets/d6bea974-7cff-40ef-949f-6b04c661cd69)) |
+
+---
 
 ## 🔧 Troubleshooting
 
 ### Common Issues
-- **WiFi Connection**: Check credentials and network connectivity
-- **LoRa Communication**: Verify wiring and antenna connections
-- **RFID Reading**: Ensure proper power (3.3V) and SPI connections
-- **LCD Display**: Confirm I2C address (default 0x27)
-- **People Counting**: Calibrate sensors and check detection thresholds
+- **WiFi Connection:** Check credentials and network connectivity
+- **LoRa Communication:** Verify wiring and antenna connections
+- **RFID Reading:** Ensure proper power (3.3V) and SPI connections
+- **LCD Display:** Confirm I2C address (default 0x27)
+- **People Counting:** Calibrate sensors and check detection thresholds
 
 ### Debug Information
-- **Serial Monitor**: 115200 baud for ESP32 debug output
-- **Dashboard Logs**: Real-time system events and errors
-- **Device Status**: Check heartbeat timestamps and firmware versions
+- **Serial Monitor:** 115200 baud for ESP32 debug output
+- **Dashboard Logs:** Real-time system events and errors
+- **Device Status:** Check heartbeat timestamps and firmware versions
 
-```
+---
+
+## 📄 License
+
+
+---
+
+## 🙏 Acknowledgments
+
+- [ESP32 Arduino Core](https://github.com/espressif/arduino-esp32)
+- [ElegantOTA](https://github.com/ayushsharma82/ElegantOTA)
+- [LoRa Library](https://github.com/sandeepmistry/arduino-LoRa)
+- [ArduinoJson](https://github.com/bblanchon/ArduinoJson)
+- [MFRC522](https://github.com/miguelbalboa/rfid)
+- [LiquidCrystal_I2C](https://github.com/johnrickman/LiquidCrystal_I2C)
+- [Keypad](https://github.com/Chris--A/Keypad)
+
+---
