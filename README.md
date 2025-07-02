@@ -241,6 +241,22 @@ SS -> GPIO 13
 
 ---
 
+## Test Suite Overview
+
+- **tests/DB-Add-Test.py**  
+  Adds test data to both devices.json and the SQLite database. Populates the system with demo devices, students, attendance records, and logs for end-to-end testing of the backend and dashboard.
+
+- **tests/test_dashboard.py**  
+  Verifies the IoT dashboard’s frontend integration. Checks if the dashboard HTML loads, expected text appears, all API endpoints function, and key JavaScript elements are present. Ensures the dashboard displays and interacts with live data as intended.
+
+- **tests/test_ota_endpoints.py**  
+  Tests Over-the-Air (OTA) update API endpoints. Verifies device, firmware, and OTA push endpoints for both WiFi and LoRa, ensuring the backend supports firmware management and update workflows.
+
+- **tests/test_system.py**  
+  Comprehensive system test for Flask server endpoints. Validates core API endpoints, firmware operations (download/push), and database integration. Also checks device registration and error handling for robustness.
+
+---
+
 ## 📄 License
 
 This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
