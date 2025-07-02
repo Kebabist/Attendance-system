@@ -219,11 +219,9 @@ SS -> GPIO 13
 
 ## 🖼️ Screenshots
 
-> _Add your screenshots here to showcase the dashboard, device status, and real-time people counting!_
-
 | Dashboard Overview | Device Management | Attendance Records |
 |:------------------:|:----------------:|:-----------------:|
-| ![Dashboard](![image](https://github.com/user-attachments/assets/8ec19873-63b7-4139-ae15-b68b3fadfada)) | ![Devices](![image](https://github.com/user-attachments/assets/dd2ebd9f-2724-4863-80c3-1498970f4836)) | ![Attendance](![image](https://github.com/user-attachments/assets/d6bea974-7cff-40ef-949f-6b04c661cd69)) |
+| ![Dashboard](https://github.com/user-attachments/assets/8ec19873-63b7-4139-ae15-b68b3fadfada) | ![Devices](https://github.com/user-attachments/assets/dd2ebd9f-2724-4863-80c3-1498970f4836) | ![Attendance](https://github.com/user-attachments/assets/d6bea974-7cff-40ef-949f-6b04c661cd69) |
 
 ---
 
