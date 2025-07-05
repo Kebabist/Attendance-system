@@ -1,3 +1,87 @@
+/*
+ * ESP32 Master Device - Enhanced Attendance System with LoRa OTA Support
+ * 
+ * SETUP INSTRUCTIONS:
+ * ==================
+ * 
+ * 1. INSTALL ESP32 BOARD SUPPORT IN ARDUINO IDE:
+ *    - Open Arduino IDE
+ *    - Go to File → Preferences
+ *    - In "Additional Board Manager URLs" add:
+ *      https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+ *    - Go to Tools → Board → Boards Manager
+ *    - Search for "esp32" and install "ESP32 by Espressif Systems"
+ *    - After installation, go to Tools → Board → ESP32 Arduino → ESP32 Dev Module
+ *    - Select the correct COM port under Tools → Port
+ * 
+ * 2. REQUIRED LIBRARIES TO INSTALL:
+ *    Install these libraries via Arduino IDE Library Manager (Tools → Manage Libraries):
+ *    
+ *    a) LoRa Library:
+ *       - Search: "LoRa"
+ *       - Install: "LoRa by Sandeep Mistry" (latest version)
+ *    
+ *    b) ElegantOTA Library:
+ *       - Search: "ElegantOTA"
+ *       - Install: "ElegantOTA by Ayush Sharma" (latest version)
+ *    
+ *    c) ArduinoJson Library:
+ *       - Search: "ArduinoJson"
+ *       - Install: "ArduinoJson by Benoit Blanchon" (version 6.x recommended)
+ * 
+ * 3. BUILT-IN LIBRARIES (No installation needed):
+ *    - WiFi (ESP32 Core)
+ *    - HTTPClient (ESP32 Core)
+ *    - SPI (Arduino Core)
+ *    - WebServer (ESP32 Core)
+ *    - Update (ESP32 Core)
+ * 
+ * 4. BOARD CONFIGURATION:
+ *    - Board: "ESP32 Dev Module"
+ *    - Upload Speed: 921600
+ *    - CPU Frequency: 240MHz (WiFi/BT)
+ *    - Flash Frequency: 80MHz
+ *    - Flash Mode: QIO
+ *    - Flash Size: 4MB (32Mb)
+ *    - Partition Scheme: Default 4MB with spiffs
+ *    - Core Debug Level: None
+ *    - PSRAM: Disabled
+ * 
+ * 5. HARDWARE CONNECTIONS:
+ *    LoRa Module (SX1276/SX1278) connections:
+ *    - VCC → 3.3V
+ *    - GND → GND
+ *    - SCK → GPIO 18 (SPI SCK)
+ *    - MISO → GPIO 19 (SPI MISO)
+ *    - MOSI → GPIO 23 (SPI MOSI)
+ *    - NSS/CS → GPIO 5 (LORA_SS_PIN)
+ *    - RST → GPIO 14 (LORA_RST_PIN)
+ *    - DIO0 → GPIO 2 (LORA_DIO0_PIN)
+ * 
+ * 6. BEFORE UPLOADING:
+ *    - Update WiFi credentials (WIFI_SSID and WIFI_PASSWORD)
+ *    - Update server URLs (SERVER_URL and FLASK_SERVER)
+ *    - Ensure Flask server is running and accessible
+ *    - Verify hardware connections
+ * 
+ * 7. FEATURES:
+ *    - WiFi connectivity and web interface
+ *    - LoRa communication with slave devices
+ *    - Over-The-Air (OTA) firmware updates (WiFi and LoRa)
+ *    - Attendance data collection and forwarding
+ *    - Real-time device monitoring and management
+ *    - Web-based control panel
+ * 
+ * 8. TROUBLESHOOTING:
+ *    - If compilation fails, ensure all libraries are installed correctly
+ *    - If upload fails, check COM port and board selection
+ *    - If WiFi connection fails, verify credentials and network availability
+ *    - If LoRa communication fails, check wiring and antenna connections
+ * 
+ * Author: Kebabist
+ * Date: June 2025
+ * Version: 1.0
+ */
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <SPI.h>
