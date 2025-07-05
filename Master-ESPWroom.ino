@@ -1,88 +1,3 @@
-/*
- * ESP32 Master Device - Enhanced Attendance System with LoRa OTA Support
- * 
- * SETUP INSTRUCTIONS:
- * ==================
- * 
- * 1. INSTALL ESP32 BOARD SUPPORT IN ARDUINO IDE:
- *    - Open Arduino IDE
- *    - Go to File → Preferences
- *    - In "Additional Board Manager URLs" add:
- *      https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
- *    - Go to Tools → Board → Boards Manager
- *    - Search for "esp32" and install "ESP32 by Espressif Systems"
- *    - After installation, go to Tools → Board → ESP32 Arduino → ESP32 Dev Module
- *    - Select the correct COM port under Tools → Port
- * 
- * 2. REQUIRED LIBRARIES TO INSTALL:
- *    Install these libraries via Arduino IDE Library Manager (Tools → Manage Libraries):
- *    
- *    a) LoRa Library:
- *       - Search: "LoRa"
- *       - Install: "LoRa by Sandeep Mistry" (latest version)
- *    
- *    b) ElegantOTA Library:
- *       - Search: "ElegantOTA"
- *       - Install: "ElegantOTA by Ayush Sharma" (latest version)
- *    
- *    c) ArduinoJson Library:
- *       - Search: "ArduinoJson"
- *       - Install: "ArduinoJson by Benoit Blanchon" (version 6.x recommended)
- * 
- * 3. BUILT-IN LIBRARIES (No installation needed):
- *    - WiFi (ESP32 Core)
- *    - HTTPClient (ESP32 Core)
- *    - SPI (Arduino Core)
- *    - WebServer (ESP32 Core)
- *    - Update (ESP32 Core)
- * 
- * 4. BOARD CONFIGURATION:
- *    - Board: "ESP32 Dev Module"
- *    - Upload Speed: 921600
- *    - CPU Frequency: 240MHz (WiFi/BT)
- *    - Flash Frequency: 80MHz
- *    - Flash Mode: QIO
- *    - Flash Size: 4MB (32Mb)
- *    - Partition Scheme: Default 4MB with spiffs
- *    - Core Debug Level: None
- *    - PSRAM: Disabled
- * 
- * 5. HARDWARE CONNECTIONS:
- *    LoRa Module (SX1276/SX1278) connections:
- *    - VCC → 3.3V
- *    - GND → GND
- *    - SCK → GPIO 18 (SPI SCK)
- *    - MISO → GPIO 19 (SPI MISO)
- *    - MOSI → GPIO 23 (SPI MOSI)
- *    - NSS/CS → GPIO 5 (LORA_SS_PIN)
- *    - RST → GPIO 14 (LORA_RST_PIN)
- *    - DIO0 → GPIO 2 (LORA_DIO0_PIN)
- * 
- * 6. BEFORE UPLOADING:
- *    - Update WiFi credentials (WIFI_SSID and WIFI_PASSWORD)
- *    - Update server URLs (SERVER_URL and FLASK_SERVER)
- *    - Ensure Flask server is running and accessible
- *    - Verify hardware connections
- * 
- * 7. FEATURES:
- *    - WiFi connectivity and web interface
- *    - LoRa communication with slave devices
- *    - Over-The-Air (OTA) firmware updates (WiFi and LoRa)
- *    - Attendance data collection and forwarding
- *    - Real-time device monitoring and management
- *    - Web-based control panel
- * 
- * 8. TROUBLESHOOTING:
- *    - If compilation fails, ensure all libraries are installed correctly
- *    - If upload fails, check COM port and board selection
- *    - If WiFi connection fails, verify credentials and network availability
- *    - If LoRa communication fails, check wiring and antenna connections
- * 
- * Author: Kebabist
- * Date: June 2025
- * Version: 1.0
- */
-
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <SPI.h>
@@ -169,6 +84,13 @@ int slaveCount = 0; // Current number of connected slave devices
 unsigned long lastSlaveCleanup = 0; // Timestamp of the last inactive slave cleanup
 const unsigned long SLAVE_CLEANUP_INTERVAL = 120000; // Interval for cleaning up inactive slaves (milliseconds)
 
+// Queue for storing UIDs received via LoRa
+const int MAX_QUEUE_SIZE = 10; // Maximum number of UIDs to store
+String uidQueue[MAX_QUEUE_SIZE]; // Array to store UIDs
+int queueHead = 0; // Index for the next UID to process
+int queueTail = 0; // Index for adding new UIDs
+int queueCount = 0; // Current number of UIDs in the queue
+
 // Forward declarations of functions
 uint8_t* base64_decode(const char* input, size_t input_length, size_t* output_length);
 int findSlaveIndex(String slaveId);
@@ -200,7 +122,7 @@ void loop() {
     Serial.println("⚠️ Master OTA timeout detected, resetting progress tracking");
     resetOTAProgress(); // Reset OTA progress variables
   }
-
+/*
   // Check for LoRa OTA timeouts
   if (loraOtaInProgress) {
     if (millis() - loraOtaLastActivity > LORA_OTA_TOTAL_TIMEOUT) {
@@ -211,7 +133,7 @@ void loop() {
       retryCurrentChunk(); // Retry sending the current LoRa OTA chunk
     }
   }
-
+*/
   yield(); // Yield to allow background system tasks (e.g., WiFi)
 
   // Reconnect to WiFi if disconnected
@@ -222,9 +144,18 @@ void loop() {
   receiveLoRaData(); // Check for and process incoming LoRa messages
 
   // Send received UID to server if interval has passed
-  if (receivedUID != "" && millis() - lastSendTime > SEND_INTERVAL) {
-    sendToServer(receivedUID); // Send the UID to the backend server
-    receivedUID = ""; // Clear the received UID
+  if (queueCount > 0 && millis() - lastSendTime > SEND_INTERVAL) {
+    String uid = uidQueue[queueHead]; // Get the oldest UID from the queue
+    Serial.println("🔄 Processing queued UID: " + uid);
+    
+    sendToServer(uid); // Send the UID to the backend server
+    
+    // Remove the processed UID from the queue
+    queueHead = (queueHead + 1) % MAX_QUEUE_SIZE;
+    queueCount--;
+    Serial.printf("📊 Updated queue status: %d UIDs remaining\n", queueCount);
+    
+    lastSendTime = millis(); // Update timestamp of last send
   }
 
   // Periodically check for OTA commands
@@ -238,13 +169,13 @@ void loop() {
     sendHeartbeat();
     lastHeartbeat = millis();
   }
-
+/*
   // Periodically remove inactive slave devices
   if (millis() - lastSlaveCleanup > SLAVE_CLEANUP_INTERVAL) {
     removeInactiveSlaves();
     lastSlaveCleanup = millis();
   }
-
+*/
   delay(10); // Small delay to prevent watchdog timer issues and allow other tasks
 }
 
@@ -1173,11 +1104,11 @@ void setupOTA() {
 
 // Receives and processes data packets from LoRa
 void receiveLoRaData() {
-  int packetSize = LoRa.parsePacket(); // Check for incoming LoRa packet
+  int packetSize = LoRa.parsePacket();
 
-  if (packetSize) { // If a packet is received
+  if (packetSize) {
     String receivedData = "";
-    while (LoRa.available()) { // Read all available bytes
+    while (LoRa.available()) {
       receivedData += (char)LoRa.read();
     }
 
@@ -1185,31 +1116,52 @@ void receiveLoRaData() {
 
     // Process different types of LoRa messages based on prefix
     if (receivedData.startsWith("HEARTBEAT:")) {
-      processSlaveHeartbeat(receivedData); // Process heartbeat from a slave
+      processSlaveHeartbeat(receivedData);
     } else if (receivedData.startsWith("OTA_ACK:") || receivedData.startsWith("OTA_NACK:")) {
-      if (loraOtaInProgress) { // Only process OTA ACKs/NACKs if LoRa OTA is active
+      if (loraOtaInProgress) {
         processLoRaOTAAck(receivedData);
       }
-    } else if (receivedData.startsWith("OTA_READY:")) { // Slave is ready for WiFi OTA
-      String slaveIP = receivedData.substring(10); // Extract slave IP address
+    } else if (receivedData.startsWith("OTA_READY:")) {
+      String slaveIP = receivedData.substring(10);
       Serial.println("✅ Slave OTA Ready at IP: " + slaveIP);
       Serial.println("🔗 Access slave OTA at: http://" + slaveIP + "/update");
-    } else if (receivedData.startsWith("UID:")) { // UID message from slave
-      receivedUID = receivedData.substring(4); // Extract UID
-      Serial.println("🏷️ UID Received: " + receivedUID);
-      sendAckToSender(); // Send ACK back to the slave
+    } else if (receivedData.startsWith("UID:")) {
+      // Extract UID and add to queue
+      String uid = receivedData.substring(4);
+      Serial.println("🏷️ UID Message Received: " + uid);
+      addToQueue(uid);
+      sendAckToSender(uid);
     } else {
       // Handle legacy UID format (direct UID without prefix)
-      // This might be from older slave firmware or a simple UID transmission
-      if (receivedData.length() > 2 && receivedData.length() < 20) { // Basic validation for UID-like string
-        receivedUID = receivedData;
-        Serial.println("🏷️ Legacy UID Received: " + receivedUID);
-        sendAckToSender();
+      if (receivedData.length() > 2 && receivedData.length() < 20) {
+        Serial.println("🏷️ Legacy UID Format Detected: " + receivedData);
+        addToQueue(receivedData);
+        sendAckToSender(receivedData);
       } else {
         Serial.println("⚠️ Unknown LoRa message format: " + receivedData);
       }
     }
   }
+}
+
+void addToQueue(String uid) {
+  Serial.println("➕ Adding to UID queue: " + uid);
+  
+  // Check if the queue is full
+  if (queueCount >= MAX_QUEUE_SIZE) {
+    Serial.println("⚠️ UID Queue full! Discarding oldest UID");
+    // Remove the oldest UID by advancing the head
+    queueHead = (queueHead + 1) % MAX_QUEUE_SIZE;
+    queueCount--;
+  }
+  
+  // Add the new UID to the queue
+  uidQueue[queueTail] = uid;
+  queueTail = (queueTail + 1) % MAX_QUEUE_SIZE;
+  queueCount++;
+  
+  Serial.printf("📊 Queue status: %d UIDs pending (head: %d, tail: %d)\n", 
+                queueCount, queueHead, queueTail);
 }
 
 // Processes heartbeat messages received from slave devices
@@ -1450,12 +1402,12 @@ void initializeLoRa() {
 }
 
 // Sends an acknowledgment (ACK) message back to the sender of a UID via LoRa
-void sendAckToSender() {
+void sendAckToSender(String uid) {
   LoRa.beginPacket();
-  LoRa.print("ACK:" + receivedUID); // ACK message format: ACK:<UID>
+  LoRa.print("ACK:" + uid); // ACK message format: ACK:<UID>
   LoRa.endPacket();
 
-  Serial.println("📤 Sent ACK to sender node for UID: " + receivedUID);
+  Serial.println("📤 Sent ACK to sender node for UID: " + uid);
 }
 
 // Triggers WiFi OTA mode on slave devices by sending a LoRa command
